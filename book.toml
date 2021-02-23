@@ -1,0 +1,14 @@
+[book]
+title = "Time"
+authors = ["Jacob Pratt"]
+language = "en"
+multilingual = false
+src = "src"
+create-missing = false
+
+[rust]
+edition = "2018"
+
+[output.html]
+no-section-label = true
+git-repository-url = "https://github.com/time-rs/time"

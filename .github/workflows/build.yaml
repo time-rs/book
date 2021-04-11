@@ -31,5 +31,21 @@ jobs:
           mv mdbook mdbook-path
           echo "$(pwd)/mdbook-path" >> $GITHUB_PATH
 
+      - name: Build diagrams
+        run: |
+          pip install -r diagrams/requirements.txt
+          mkdir src/diagrams
+          python diagrams/diagrams.py
+
       - name: Build
         run: mdbook build
+
+      - name: Publish internal docs
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          branch: main
+          folder: book
+          target-folder: book
+          repository-name: time-rs/time-rs.github.io
+        if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.master_branch)

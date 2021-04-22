@@ -15,9 +15,9 @@ Currently, all types that implement one trait also implement the other, but this
 
 The following types currently implement both the `Formattable` and `Parsable` traits:
 
-- `&[FormatItem<'_>]`
-- `Vec<FormatItem<'_>>` <small>(when the `alloc` feature is enabled)</small>
 - `FormatItem<'_>`
+- `[FormatItem<'_>]`
+- `T where <T as Deref>::Target: Formattable` (or `Parsable`)
 - All [well known formats](./well-known-format-descriptions.md)
 
 While it is possible to construct a value manually, this is generally not recommended, as it is more

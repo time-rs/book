@@ -85,6 +85,8 @@ present in the above diagram.
   long format is the full English name of the month, while the short format is the first three
   letters of it.
 
+  When parsing, there is the option to consume text-based formats case-insensitively.
+
 - **Whole hours offset from UTC**
 
   ![syntax for offset hour component](../diagrams/offset_hour.svg#rr)
@@ -128,6 +130,8 @@ present in the above diagram.
   Users have the option to choose whether the value is uppercase or lowercase. This component is
   typically used in conjunction with the hour of the day with `repr:12`.
 
+  When parsing, there is the option to consume text-based formats case-insensitively.
+
 - **Second within the clock minute**
 
   ![syntax for second component](../diagrams/second.svg#rr)
@@ -168,6 +172,8 @@ present in the above diagram.
   _sunday_ and _monday_ representations, which are numerical. These formats are either zero to six
   or one to seven (depending on whether `one_indexed` is false or true, respectively), with the
   named day being at the start of that range.
+
+  When parsing, there is the option to consume text-based formats case-insensitively.
 
 - **Year**
 

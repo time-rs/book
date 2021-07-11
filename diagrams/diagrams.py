@@ -41,6 +41,7 @@ railroad.STROKE_ODD_PIXEL_LENGTH = STROKE_WIDTH % 2 == 1
 railroad.CHAR_WIDTH = 7.5
 
 padding = Sequence('padding:', Choice(0, 'zero', 'space', 'none'))
+case_sensitive = Sequence('case_sensitive:', Choice(0, 'true', 'false'))
 hour_repr = Sequence('repr:', Choice(0, '24', '12'))
 month_repr = Sequence('repr:', Choice(0, 'numerical', 'long', 'short'))
 period_case = Sequence('case:', Choice(0, 'lower', 'upper'))
@@ -86,11 +87,13 @@ complete = Diagram(
                         'month',
                         copy(padding),
                         copy(month_repr),
+                        copy(case_sensitive),
                     ),
                     generate_sequence(
                         'weekday',
                         copy(weekday_repr),
                         copy(weekday_one_indexed),
+                        copy(case_sensitive),
                     ),
                     generate_sequence(
                         'week_number',
@@ -109,7 +112,11 @@ complete = Diagram(
                         copy(padding),
                         copy(hour_repr),
                     ),
-                    generate_sequence('period', copy(period_case)),
+                    generate_sequence(
+                        'period',
+                        copy(period_case),
+                        copy(case_sensitive),
+                    ),
                     generate_sequence('subsecond', copy(subsecond_digits)),
                     generate_sequence(
                         'offset_hour',
@@ -188,17 +195,18 @@ def generate_diagram(name, *modifiers):
 
 
 day = generate_diagram('day', copy(padding))
-month = generate_diagram('month', copy(padding), copy(month_repr))
+month = generate_diagram('month', copy(
+    padding), copy(month_repr), copy(case_sensitive))
 ordinal = generate_diagram('ordinal', copy(padding))
 weekday = generate_diagram('weekday', copy(
-    weekday_repr), copy(weekday_one_indexed))
+    weekday_repr), copy(weekday_one_indexed), copy(case_sensitive))
 week_number = generate_diagram(
     'week_number', copy(padding), copy(week_number_repr))
 year = generate_diagram('year', copy(padding), copy(
     year_repr), copy(year_base), copy(sign))
 hour = generate_diagram('hour', copy(padding), copy(hour_repr))
 minute = generate_diagram('minute', copy(padding))
-period = generate_diagram('period', copy(period_case))
+period = generate_diagram('period', copy(period_case), copy(case_sensitive))
 second = generate_diagram('second', copy(padding))
 subsecond = generate_diagram('subsecond', copy(subsecond_digits))
 offset_hour = generate_diagram('offset_hour', copy(padding), copy(sign))

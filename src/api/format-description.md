@@ -4,6 +4,12 @@
     filter: invert(0.8) hue-rotate(180deg);
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .light.no-js img[src$='#rr'] {
+    filter: invert(0.8) hue-rotate(180deg);
+  }
+}
 </style>
 
 # Format description

@@ -62,7 +62,7 @@ following format description:
 ```rust
 use time::macros::format_description;
 
-static EXPIRES_TIME_FORMAT: &'static [FormatItem<'static>] = format_description!(
+static EXPIRES_TIME_FORMAT: &[FormatItem<'_>] = format_description!(
     "[weekday repr:short], [day padding:zero] [month repr:short] [year repr:full] \
         [hour repr:24 padding:zero]:[minute padding:zero]:[second padding:zero] \
         [offset_hour padding:zero]:[offset_minute padding:zero]"
@@ -79,7 +79,7 @@ fn parse() -> OffsetDateTime {
 }
 ```
 
-## Fields
+## Components
 
 What follows is the syntax for all components. Any of the following may be used where _component_
 is present in the above diagram.

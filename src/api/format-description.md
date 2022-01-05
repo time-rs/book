@@ -51,17 +51,47 @@ to have both consecutive literals and consecutive components. Components must be
 between brackets with optional whitespace. If a literal `[` is desired, it must be escaped with a
 second bracket. A closing bracket need not be escaped if alone.
 
-Follows is the syntax for all components. Any of the following may be used where _component_ is
-present in the above diagram.
+## Examples
 
-- **Day of month**
+Time format descriptions can be created at compile-time using `time::macros::format_description!`;
+code will not compile if parsing of the format fails. Alternately,
+
+To parse an `OffsetDateTime` from a string like `Thu, 06 Jan 2022 02:53:35 00:00`, we can use the
+following format description:
+
+```rust
+use time::macros::format_description;
+
+static EXPIRES_TIME_FORMAT: &'static [FormatItem<'static>] = format_description!(
+    "[weekday repr:short], [day padding:zero] [month repr:short] [year repr:full] \
+        [hour repr:24 padding:zero]:[minute padding:zero]:[second padding:zero] \
+        [offset_hour padding:zero]:[offset_minute padding:zero]"
+);
+```
+
+And we can parse a datetime like so:
+
+```rust
+use time::OffsetDateTime;
+
+fn parse() -> OffsetDateTime {
+    OffsetDateTime::parse("Thu, 06 Jan 2022 02:53:35 00:00", EXPIRES_TIME_FORMAT).unwrap()
+}
+```
+
+## Fields
+
+What follows is the syntax for all components. Any of the following may be used where _component_
+is present in the above diagram.
+
+- **Day of month**: `day`
 
   ![syntax for day component](../diagrams/day.svg#rr)
 
   The padded value has a width of 2. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **Clock hour**
+- **Clock hour**: `hour`
 
   ![syntax for hour component](../diagrams/hour.svg#rr)
 
@@ -72,14 +102,14 @@ present in the above diagram.
   used in the Anglosphere, while the alternative (the 24-hour clock) is frequently used elsewhere.
   The 12-hour clock is typically used in conjunction with AM/PM.
 
-- **Minute within the clock hour**
+- **Minute within the clock hour**: `minute`
 
   ![syntax for minute component](../diagrams/minute.svg#rr)
 
   The padded value has a width of 2. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **Month**
+- **Month**: `month`
 
   ![syntax for month component](../diagrams/month.svg#rr)
 
@@ -93,7 +123,7 @@ present in the above diagram.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 
-- **Whole hours offset from UTC**
+- **Whole hours offset from UTC**: `offset_hour`
 
   ![syntax for offset hour component](../diagrams/offset_hour.svg#rr)
 
@@ -104,7 +134,7 @@ present in the above diagram.
   If the sign is automatic, it will only be present when the value is negative. If mandatory, it
   will always be present.
 
-- **Minutes within the hour offset from UTC**
+- **Minutes within the hour offset from UTC**: `offset_minute`
 
   ![syntax for offset minute component](../diagrams/offset_minute.svg#rr)
 
@@ -113,7 +143,7 @@ present in the above diagram.
 
   This value is always positive. As such, it has no sign.
 
-- **Seconds within the minute offset from UTC**
+- **Seconds within the minute offset from UTC**: `offset_second`
 
   ![syntax for offset second component](../diagrams/offset_second.svg#rr)
 
@@ -122,14 +152,14 @@ present in the above diagram.
 
   This value is always positive. As such, it has no sign.
 
-- **Day of year**
+- **Day of year**: `ordinal`
 
   ![syntax for ordinal component](../diagrams/ordinal.svg#rr)
 
   The padded value has a width of 3. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **AM/PM**
+- **AM/PM**: `period`
 
   ![syntax for period component](../diagrams/period.svg#rr)
 
@@ -138,14 +168,14 @@ present in the above diagram.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 
-- **Second within the clock minute**
+- **Second within the clock minute**: `second`
 
   ![syntax for second component](../diagrams/second.svg#rr)
 
   The padded value has a width of 2. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **Subsecond within the clock second**
+- **Subsecond within the clock second**: `subsecond`
 
   ![syntax for subsecond component](../diagrams/subsecond.svg#rr)
 
@@ -155,7 +185,7 @@ present in the above diagram.
   There is the option to require a fixed number of digits between one and nine. When formatting, the
   value is not rounded if more digits would otherwise be present.
 
-- **Week of the year**
+- **Week of the year**: `week_number`
 
   ![syntax for week number component](../diagrams/week_number.svg#rr)
 
@@ -168,7 +198,7 @@ present in the above diagram.
   first instance of that day in the calendar year (e.g. Sunday-based week numbering has week one
   start on the first Sunday of the year).
 
-- **Day of the week**
+- **Day of the week**: `weekday`
 
   ![syntax for weekday component](../diagrams/weekday.svg#rr)
 
@@ -181,7 +211,7 @@ present in the above diagram.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 
-- **Year**
+- **Year**: `year`
 
   ![syntax for year component](../diagrams/year.svg#rr)
 

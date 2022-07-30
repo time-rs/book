@@ -1,13 +1,14 @@
-# Summary
+# Getting started
 
-# Introduction
+- [Overview](./index.md) <!-- would be nice to have a custom index here -->
 
-- [What is Time?](./index.md) <!-- would be nice to have a custom index here -->
+# How-to guide
+
 - [What Time can do](./intro/what-time-can-do.md)
 - [What Time can't do](./intro/what-time-cant-do.md)
 - [Limitations and alternatives](./intro/limitations-and-alternatives.md)
 
-# API
+# Technical reference
 
 - [Construction](./api/construction.md)
 - [Conversion between types](./api/conversion-between-types.md)

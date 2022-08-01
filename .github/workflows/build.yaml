@@ -24,6 +24,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Check for typos
+        uses: crate-ci/typos@master
+
       - name: Install mdbook
         run: |
           wget https://github.com/rust-lang/mdBook/releases/download/v0.4.7/mdbook-v0.4.7-x86_64-unknown-linux-gnu.tar.gz -O - | tar -xz

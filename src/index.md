@@ -83,7 +83,7 @@ println!("{}", b - a);
 ## `time` vs `chrono`
 
 time 0.1 was originally a thin wrapper around libc time functions. Because it was relatively
-barebones, [`chrono`](https://docs.rs/chrono/0.4.19/chrono/) was developped as a richer API on top
+barebones, [`chrono`](https://docs.rs/chrono/0.4.19/chrono/) was developed as a richer API on top
 of time 0.1.
 
 Around 2019, the time crate, which was unmaintained since August 2016, was picked up for maintenance

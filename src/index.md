@@ -35,10 +35,6 @@ time = { version = "0.3", features = ["macros"] }
 2. **Get the current time** With the crate feature `std` a UTC offset
 ([`OffsetDateTime`](https://docs.rs/time/latest/time/struct.OffsetDateTime.html)) is available,
 but with the crate feature `local-offset`, we can also get the local time.
-The time is retrieved from a [non-monotonic](https://stackoverflow.com/a/41203566/5964129)
-[`std::time::SystemTime`](https://doc.rust-lang.org/std/time/struct.SystemTime.html) or from a
-ECMAScript [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
-on WebAssembly.
 
 ```rust
 use time::OffsetDateTime;

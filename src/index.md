@@ -32,7 +32,20 @@ This short tutorial describes basic usage of `time`, to get operational quickly.
 time = { version = "0.3", features = ["macros"] }
 ```
 
-2. **Create dates and times.** We can create dates
+2. **Get the current time** With the crate feature `std` a UTC offset
+([`OffsetDateTime`](https://docs.rs/time/latest/time/struct.OffsetDateTime.html)) is available,
+but with the crate feature `local-offset`, we can also get the local time.
+
+```rust
+use time::OffsetDateTime;
+
+let now = OffsetDateTime::now_utc();
+// let local = OffsetDateTime::now_local();
+
+println!("{now}");
+```
+
+3. **Create dates and times.** We can create dates
 ([`Date`](https://docs.rs/time/latest/time/struct.Date.html)),
 dates with times
 ([`PrimitiveDateTime`](https://docs.rs/time/latest/time/struct.PrimitiveDateTime.html))
@@ -65,7 +78,7 @@ println!("{date}, {datetime}, {datetime_off}");
 // 2022-01-01, 2022-01-01 13:00:55.0, 2022-01-01 13:00:55.0 +01:02:03
 ```
 
-3. **Manipulate dates and use
+4. **Manipulate dates and use
 [`Duration`s](https://time-rs.github.io/api/time/struct.Duration.html)**:
 ```rust
 use time::Duration;

@@ -32,7 +32,25 @@ This short tutorial describes basic usage of `time`, to get operational quickly.
 time = { version = "0.3", features = ["macros"] }
 ```
 
-2. **Create dates and times.** We can create dates
+2. **Get the current time** With the `std` features a UTC offset
+([`OffsetDateTime`](https://docs.rs/time/latest/time/struct.OffsetDateTime.html)) wrapping is available,
+but with the crate feature `local-offset`, we can also get the local time.
+
+The time is retrieved from a non-monotonic
+[`std::time::SystemTime`](https://doc.rust-lang.org/std/time/struct.SystemTime.html) or from a
+ECMAScript [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+on WebAssembly.
+
+```rust
+use time::OffsetDateTime;
+
+let now = OffsetDateTime::now_utc();
+// let local = OffsetDateTime::now_local();
+
+println!("{now}");
+```
+
+3. **Create dates and times.** We can create dates
 ([`Date`](https://docs.rs/time/latest/time/struct.Date.html)),
 dates with times
 ([`PrimitiveDateTime`](https://docs.rs/time/latest/time/struct.PrimitiveDateTime.html))
@@ -65,7 +83,7 @@ println!("{date}, {datetime}, {datetime_off}");
 // 2022-01-01, 2022-01-01 13:00:55.0, 2022-01-01 13:00:55.0 +01:02:03
 ```
 
-3. **Manipulate dates and use
+4. **Manipulate dates and use
 [`Duration`s](https://time-rs.github.io/api/time/struct.Duration.html)**:
 ```rust
 use time::Duration;

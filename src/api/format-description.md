@@ -195,7 +195,7 @@ present in the above diagram.
 
   There are two bases for the year: _calendar_ and _iso\_week_. The former is what you want if using
   the month, day, ordinal, or similar. You likely only want to use `iso_week` if you are using the
-  week number with `repr:iso`. [Don't be like Twitter](twitter-bug); know which should be used when.
+  week number with `repr:iso`. [Don't be like Twitter][twitter-bug]; know which should be used when.
 
   Users have the option to choose whether the sign is _automatic_ (the default) or _mandatory_.
   If the sign is automatic, it will only be present when the value is negative _or_ if the

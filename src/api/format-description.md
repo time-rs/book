@@ -26,42 +26,123 @@ The following types currently implement both the `Formattable` and `Parsable` tr
 - `T where <T as Deref>::Target: Formattable` (or `Parsable`)
 - All [well known formats](./well-known-format-descriptions.md)
 
-While it is possible to construct a value manually, this is generally not recommended, as it is more
-tedious and less readable than the alternative. Unless you are constructing a `FormatItem` manually,
-you will likely never need to know anything about it other than that it is produced by the
-`format_description!` macro or `format_description::parse` method.
+While it is possible to construct a format description manually, this is generally not recommended,
+as it is more tedious and less readable than the alternative. Unless you are doing this, you will
+likely never need to know anything about `FormatItem` other than that it is produced by the
+`format_description!` macro or any of the various parsing methods.
 
 If the format description is statically known, you should use the `format_description!` macro. This
 is identical to the `format_description::parse` method, but runs at compile-time, throwing an error
 if the format description is invalid. If you do not know the desired format statically (such as if
-you are using one provided by the user), you should use the `format_description::parse` method,
-which is fallible.
+you are using one provided by the user), you should use the `format_description::parse_owned` method
+(or similar method in the `format_description` module), which is fallible.
 
 Format descriptions have **components** and **literals**. Literals are formatted and parsed as-is.
 Components are the mechanism by which values (such as a `Time` or `Date`) are dynamically formatted
 and parsed. They have significant flexibility, allowing for differences in padding, variable widths
 for subsecond values, numerical or textual representations, and more.
 
-The syntax for the method and the macro is identical.
-
-![syntax for full format description](../diagrams/abbreviated.svg#rr)
-
 Either a literal or a component may be present at the start of the format description. It is valid
 to have both consecutive literals and consecutive components. Components must be fully contained
-between brackets with optional whitespace. If a literal `[` is desired, it must be escaped with a
-second bracket. A closing bracket need not be escaped if alone.
+between brackets with optional whitespace. Escaping behavior varies by version, and is described
+below.
 
-Follows is the syntax for all components. Any of the following may be used where _component_ is
-present in the above diagram.
+## Versioning
 
-- **Day of month**
+There are multiple versions of the format description syntax in `time`. Similar to Rust editions,
+all versions are and will remain supported indefinitely. Some features may only be available in
+newer versions for technical reasons.
+
+In most cases, you do not need to worry about the version of the format description. However,
+there are some differences.
+
+### Differences
+
+| Literal | Version 1 | Version 2 |
+| ------- | --------- | --------- |
+| `[`     | `[[`      | `\[`      |
+| `]`     | `]`       | `\]`      |
+| `\`     | `\`       | `\\`      |
+
+`[first]` and `[optional]` are supported in both version 1 and version 2, but individual methods may
+prevent their use. This is because some methods (`format_description::parse` for version 1,
+`format_description::parse_borrowed` for version 2) return a format description that is entirely
+borrowed. However, when parsing `[first]` and `[optional]`, the generated sequence is necessarily
+owned. For this reason, you will need to use the `format_description::parse_owned` method or the
+`format_description!` macro.
+
+### Version used
+
+| Item                                   | Version used                |
+| -------------------------------------- | --------------------------- |
+| [`format_description::parse`]          | 1                           |
+| [`format_description::parse_owned`]    | 2                           |
+| [`format_description::parse_borrowed`] | 2                           |
+| [`format_description!`]                | configurable (1 by default) |
+
+[`format_description::parse`]: https://time-rs.github.io/api/time/format_description/fn.parse.html
+[`format_description::parse_owned`]: https://time-rs.github.io/api/time/format_description/fn.parse_owned.html
+[`format_description::parse_borrowed`]: https://time-rs.github.io/api/time/format_description/fn.parse_borrowed.html
+[`format_description!`]: https://time-rs.github.io/api/time/macros/macro.format_description.html
+
+#### Configuring [`format_description!`]
+
+For backwards-compatibility reasons, the `format_description!` macro defaults to version 1. If you
+want to use a different version, you can do so by setting the `version` parameter to `2`. Note that
+this is only necessary if you are relying on a difference in behavior between the versions.
+
+```rust,no_run
+use time::macros::format_description;
+let _ = format_description!("[hour]:[minute]:[second]"); // Version 1 is implied.
+let _ = format_description!(version = 1, "[hour]:[minute]:[second]");
+let _ = format_description!(version = 2, "[hour]:[minute]:[second]");
+```
+
+Attempting to provide an invalid version will result in a compile-time error.
+
+```rust,compile_fail
+use time::macros::format_description;
+// 0 is not a valid version, so compilation will fail.
+let _ = format_description!(version = 0, "[hour]:[minute]:[second]");
+```
+
+### Version 1
+
+![version 1 top-level syntax](../diagrams/abbreviated-v1.svg#rr)
+
+`[[` produces a literal `[`. No other character must be escaped.
+
+### Version 2
+
+![version 2 top-level syntax](../diagrams/abbreviated-v2.svg#rr)
+
+`\` is used to begin an escape sequence. Currently, the only valid escape sequences are `\[`, `\]`,
+and `\\`. Any other character following `\` is invalid.
+
+## Components
+
+Follows is the syntax for all components in alphabetical order. Any of the following may be used
+where _component_ is present in the above diagram. "Whitespace" refers to any non-empty sequence of
+ASCII whitespace characters.
+
+- **Day of month**: `[day]`
 
   ![syntax for day component](../diagrams/day.svg#rr)
 
   The padded value has a width of 2. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **Clock hour**
+- **First item**: `[first]`
+
+  ![syntax for first component](../diagrams/first.svg#rr)
+
+  A series of `FormatItem`s (or `OwnedFormatItem`s) where, when parsing, the first successful parse
+  is used. When formatting, the first item is used.
+
+  `format_description` refers to a complete format description that is nested; whitespace (including
+  leading and trailing) is significant.
+
+- **Clock hour**: `[hour]`
 
   ![syntax for hour component](../diagrams/hour.svg#rr)
 
@@ -72,14 +153,14 @@ present in the above diagram.
   used in the Anglosphere, while the alternative (the 24-hour clock) is frequently used elsewhere.
   The 12-hour clock is typically used in conjunction with AM/PM.
 
-- **Minute within the clock hour**
+- **Minute within the clock hour**: `[minute]`
 
   ![syntax for minute component](../diagrams/minute.svg#rr)
 
   The padded value has a width of 2. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **Month**
+- **Month**: `[month]`
 
   ![syntax for month component](../diagrams/month.svg#rr)
 
@@ -93,7 +174,7 @@ present in the above diagram.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 
-- **Whole hours offset from UTC**
+- **Whole hours offset from UTC**: `[offset_hour]`
 
   ![syntax for offset hour component](../diagrams/offset_hour.svg#rr)
 
@@ -104,7 +185,7 @@ present in the above diagram.
   If the sign is automatic, it will only be present when the value is negative. If mandatory, it
   will always be present.
 
-- **Minutes within the hour offset from UTC**
+- **Minutes within the hour offset from UTC**: `[offset_minute]`
 
   ![syntax for offset minute component](../diagrams/offset_minute.svg#rr)
 
@@ -113,7 +194,7 @@ present in the above diagram.
 
   This value is always positive. As such, it has no sign.
 
-- **Seconds within the minute offset from UTC**
+- **Seconds within the minute offset from UTC**: `[offset_second]`
 
   ![syntax for offset second component](../diagrams/offset_second.svg#rr)
 
@@ -122,14 +203,24 @@ present in the above diagram.
 
   This value is always positive. As such, it has no sign.
 
-- **Day of year**
+- **Optional items**: `[optional]`
+
+  ![syntax for optional component](../diagrams/optional.svg#rr)
+
+  An item that may or may not be present while parsing. While formatting, the value is always
+  present.
+
+  `format_description` refers to a complete format description that is nested; whitespace (including
+  leading and trailing) is significant.
+
+- **Day of year**: `[ordinal]`
 
   ![syntax for ordinal component](../diagrams/ordinal.svg#rr)
 
   The padded value has a width of 3. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **AM/PM**
+- **AM/PM**: `[period]`
 
   ![syntax for period component](../diagrams/period.svg#rr)
 
@@ -138,14 +229,14 @@ present in the above diagram.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 
-- **Second within the clock minute**
+- **Second within the clock minute**: `[second]`
 
   ![syntax for second component](../diagrams/second.svg#rr)
 
   The padded value has a width of 2. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-- **Subsecond within the clock second**
+- **Subsecond within the clock second**: `[subsecond]`
 
   ![syntax for subsecond component](../diagrams/subsecond.svg#rr)
 
@@ -155,7 +246,7 @@ present in the above diagram.
   There is the option to require a fixed number of digits between one and nine. When formatting, the
   value is not rounded if more digits would otherwise be present.
 
-- **Week of the year**
+- **Week of the year**: `[week_number]`
 
   ![syntax for week number component](../diagrams/week_number.svg#rr)
 
@@ -168,7 +259,7 @@ present in the above diagram.
   first instance of that day in the calendar year (e.g. Sunday-based week numbering has week one
   start on the first Sunday of the year).
 
-- **Day of the week**
+- **Day of the week**: `[weekday]`
 
   ![syntax for weekday component](../diagrams/weekday.svg#rr)
 
@@ -181,7 +272,7 @@ present in the above diagram.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 
-- **Year**
+- **Year**: `[year]`
 
   ![syntax for year component](../diagrams/year.svg#rr)
 

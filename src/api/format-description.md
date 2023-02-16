@@ -65,20 +65,18 @@ there are some differences.
 | `\`     | `\`       | `\\`      |
 
 `[first]` and `[optional]` are supported in both version 1 and version 2, but individual methods may
-prevent their use. This is because some methods (`format_description::parse` for version 1,
-`format_description::parse_borrowed` for version 2) return a format description that is entirely
+prevent their use. This is because some methods return a format description that is entirely
 borrowed. However, when parsing `[first]` and `[optional]`, the generated sequence is necessarily
 owned. For this reason, you will need to use the `format_description::parse_owned` method or the
-`format_description!` macro.
+`format_description!` macro to use these components.
 
 ### Version used
 
-| Item                                   | Version used                |
-| -------------------------------------- | --------------------------- |
-| [`format_description::parse`]          | 1                           |
-| [`format_description::parse_owned`]    | 2                           |
-| [`format_description::parse_borrowed`] | 2                           |
-| [`format_description!`]                | configurable (1 by default) |
+[`format_description::parse`] uses version 1 unconditionally. This is the only method that has a
+non-configurable version. [`format_description::parse_borrowed`] and
+[`format_description::parse_owned`] require the user to specify the version. If the version is not
+valid, compilation will fail. [`format_description!`] defaults to version 1, but can be configured
+to use a different version.
 
 [`format_description::parse`]: https://time-rs.github.io/api/time/format_description/fn.parse.html
 [`format_description::parse_owned`]: https://time-rs.github.io/api/time/format_description/fn.parse_owned.html

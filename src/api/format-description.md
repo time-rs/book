@@ -151,6 +151,13 @@ ASCII whitespace characters.
   used in the Anglosphere, while the alternative (the 24-hour clock) is frequently used elsewhere.
   The 12-hour clock is typically used in conjunction with AM/PM.
 
+- **Ignore**: `[ignore count:X]`
+
+  ![syntax for ignore component](../diagrams/ignore.svg#rr)
+
+  When parsing, this ignores the indicated number of bytes. This component is a no-op when
+  formatting. The `count` modifier is mandatory. Its value must be a positive integer.
+
 - **Minute within the clock hour**: `[minute]`
 
   ![syntax for minute component](../diagrams/minute.svg#rr)

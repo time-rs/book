@@ -59,6 +59,7 @@ weekday_one_indexed = Sequence('one_indexed:', Choice(0, 'false', 'true'))
 week_number_repr = Sequence('repr:', Choice(0, 'iso', 'sunday', 'monday'))
 year_repr = Sequence('repr:', Choice(0, 'full', 'last_two'))
 year_base = Sequence('base:', Choice(0, 'calendar', 'iso_week'))
+ignore_count = Sequence('count:', Comment('number > 0'))
 
 whitespace = Comment('whitespace')
 
@@ -134,6 +135,11 @@ subsecond = generate_diagram('subsecond', copy(subsecond_digits))
 offset_hour = generate_diagram('offset_hour', copy(padding), copy(sign))
 offset_minute = generate_diagram('offset_minute', copy(padding))
 offset_second = generate_diagram('offset_second', copy(padding))
+ignore = NamedDiagram('ignore', Diagram(Sequence(
+    'ignore',
+    copy(whitespace),
+    copy(ignore_count),
+)))
 
 format_description = Comment('format_description')
 
@@ -161,7 +167,7 @@ optional = NamedDiagram('optional', Diagram(Sequence(
 all = [
     abbreviated_v1, abbreviated_v2,
     day, month, ordinal, weekday, week_number, year, hour, minute, period, second, subsecond,
-    offset_hour, offset_minute, offset_second, first, optional,
+    offset_hour, offset_minute, offset_second, first, optional, ignore,
 ]
 
 for item in all:

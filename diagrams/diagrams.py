@@ -172,4 +172,4 @@ all = [
 
 for item in all:
     with open(f'src/diagrams/{item.name}.svg', 'w') as f:
-        item.diagram.format(ceil(STROKE_WIDTH / 2)).writeSvg(f.write)
+        item.diagram.format(ceil(STROKE_WIDTH / 2)).writeStandalone(f.write)

@@ -251,6 +251,13 @@ ASCII whitespace characters.
   There is the option to require a fixed number of digits between one and nine. When formatting, the
   value is not rounded if more digits would otherwise be present.
 
+- **Unix timestamp**: `[unix_timestamp]`
+
+  ![syntax for unix timestamp component](../diagrams/unix_timestamp.svg#rr)
+
+  Users can choose between four levels of precision: _second_ (the default), _millisecond_,
+  _microsecond_, and _nanosecond_. The sign can also be made mandatory rather than optional.
+
 - **Week of the year**: `[week_number]`
 
   ![syntax for week number component](../diagrams/week_number.svg#rr)

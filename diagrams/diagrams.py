@@ -60,6 +60,8 @@ week_number_repr = Sequence('repr:', Choice(0, 'iso', 'sunday', 'monday'))
 year_repr = Sequence('repr:', Choice(0, 'full', 'last_two'))
 year_base = Sequence('base:', Choice(0, 'calendar', 'iso_week'))
 ignore_count = Sequence('count:', Comment('number > 0'))
+unix_timestamp_precision = Sequence('precision:',
+    Choice(0, 'second', 'millisecond', 'microsecond', 'nanosecond'))
 
 whitespace = Comment('whitespace')
 
@@ -140,6 +142,7 @@ ignore = NamedDiagram('ignore', Diagram(Sequence(
     copy(whitespace),
     copy(ignore_count),
 )))
+unix_timestamp = generate_diagram('unix_timestamp', copy(unix_timestamp_precision), copy(sign))
 
 format_description = Comment('format_description')
 
@@ -167,7 +170,7 @@ optional = NamedDiagram('optional', Diagram(Sequence(
 all = [
     abbreviated_v1, abbreviated_v2,
     day, month, ordinal, weekday, week_number, year, hour, minute, period, second, subsecond,
-    offset_hour, offset_minute, offset_second, first, optional, ignore,
+    offset_hour, offset_minute, offset_second, first, optional, ignore, unix_timestamp
 ]
 
 for item in all:

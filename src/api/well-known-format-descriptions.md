@@ -16,6 +16,14 @@ otherwise documented, are:
 If you are expecting a specific output and not just any valid output, you should use a custom
 format.
 
+## Mutual agreement
+
+Some well-known format descriptions require mutual agreement for certain behavior. For example, ISO
+8601 requires that the year be four digits unless additional digits are mutually agreed upon. `time`
+inherently has no way to enforce mutual agreement. As such, it is assumed to be present. If you are
+using the default configuration, you must ensure that the other party is able to accept the
+formatted value.
+
 ## ISO 8601
 
 The format described in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html). It can

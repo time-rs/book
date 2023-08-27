@@ -140,6 +140,15 @@ ASCII whitespace characters.
   `format_description` refers to a complete format description that is nested; whitespace (including
   leading and trailing) is significant.
 
+- **End of input**: `[end]`
+
+  ![syntax for end component](../diagrams/end.svg#rr)
+
+  This component indicates the end of the input. When formatting, it is a no-op. When parsing, it
+  will only succeed if there is no further input. It does not consume any input.
+
+  There is no customization available for this component.
+
 - **Clock hour**: `[hour]`
 
   ![syntax for hour component](../diagrams/hour.svg#rr)

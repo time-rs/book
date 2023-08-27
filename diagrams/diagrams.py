@@ -104,6 +104,9 @@ abbreviated_v2 = NamedDiagram('abbreviated-v2', Diagram(
 
 # region: individual components
 def generate_diagram(name, *modifiers):
+    if len(modifiers) == 0:
+        return NamedDiagram(name, Diagram(Sequence(name)))
+
     return NamedDiagram(
         name,
         Diagram(Sequence(
@@ -143,6 +146,7 @@ ignore = NamedDiagram('ignore', Diagram(Sequence(
     copy(ignore_count),
 )))
 unix_timestamp = generate_diagram('unix_timestamp', copy(unix_timestamp_precision), copy(sign))
+end = generate_diagram('end')
 
 format_description = Comment('format_description')
 
@@ -170,7 +174,7 @@ optional = NamedDiagram('optional', Diagram(Sequence(
 all = [
     abbreviated_v1, abbreviated_v2,
     day, month, ordinal, weekday, week_number, year, hour, minute, period, second, subsecond,
-    offset_hour, offset_minute, offset_second, first, optional, ignore, unix_timestamp
+    offset_hour, offset_minute, offset_second, first, optional, ignore, unix_timestamp, end
 ]
 
 for item in all:

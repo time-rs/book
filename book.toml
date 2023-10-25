@@ -11,4 +11,10 @@ edition = "2021"
 
 [output.html]
 no-section-label = true
-git-repository-url = "https://github.com/time-rs/time"
+edit-url-template = "https://github.com/time-rs/book/edit/main/{path}"
+git-repository-url = "https://github.com/time-rs/book"
+
+[output.html.playground]
+editable = true
+runnable = false
+line-numbers = true

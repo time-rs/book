@@ -16,9 +16,6 @@ date creation.
 - **numeric traits**. Use durations easily: `2.seconds()`.
 - Supports Windows, Linux, macOS,
 [WebAssembly](https://developer.mozilla.org/fr/docs/WebAssembly) targets among others.
-- Six-month
-[minimum supported Rust version](https://rust-lang.github.io/rfcs/2495-min-rust-version.html)
-guarantee.
 
 And more...
 

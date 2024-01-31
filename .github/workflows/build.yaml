@@ -1,54 +1,16 @@
-name: Build
+name: Deploy
 
 on:
   push:
-    branches: ["**"]
-    tags-ignore: ["**"]
+    branches: ["main"]
     paths-ignore:
       - LICENSE-Apache
       - LICENSE-MIT
-  pull_request:
-    paths-ignore:
-      - LICENSE-Apache
-      - LICENSE-MIT
-  workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-
-      - name: Check for typos
-        uses: crate-ci/typos@master
-
-      - name: Install mdbook
-        run: |
-          wget https://github.com/rust-lang/mdBook/releases/download/v0.4.7/mdbook-v0.4.7-x86_64-unknown-linux-gnu.tar.gz -O - | tar -xz
-          mkdir mdbook-path
-          mv mdbook mdbook-path
-          echo "$(pwd)/mdbook-path" >> $GITHUB_PATH
-
-      - name: Build diagrams
-        run: |
-          pip install -r diagrams/requirements.txt
-          mkdir src/diagrams
-          python diagrams/diagrams.py
-
-      - name: Build
-        run: mdbook build
-
-      - name: Publish internal docs
-        uses: JamesIves/github-pages-deploy-action@releases/v4
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          branch: main
-          folder: book
-          target-folder: book
-          repository-name: time-rs/time-rs.github.io
-        if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.master_branch)
+  deploy:
+    name: Deploy
+    uses: time-rs/time-rs.github.io/.github/workflows/trigger-deploy.yaml@main
+    secrets: inherit
+    permissions:
+      actions: write

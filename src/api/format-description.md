@@ -15,16 +15,7 @@
 # Format description
 
 A format description is the manner in which the time crate knows how a value should be formatted and
-parsed. However, a format description is not a single type; it is instead represented by two
-internal traits (one for formatting and one for parsing) that are implemented by a number of types.
-Currently, all types that implement one trait also implement the other, but this is not guaranteed.
-
-The following types currently implement both the `Formattable` and `Parsable` traits:
-
-- `FormatItem<'_>`
-- `[FormatItem<'_>]`
-- `T where <T as Deref>::Target: Formattable` (or `Parsable`)
-- All [well known formats](./well-known-format-descriptions.md)
+parsed.
 
 While it is possible to construct a format description manually, this is generally not recommended,
 as it is more tedious and less readable than the alternative. Unless you are doing this, you will
@@ -46,6 +37,27 @@ Either a literal or a component may be present at the start of the format descri
 to have both consecutive literals and consecutive components. Components must be fully contained
 between brackets with optional whitespace. Escaping behavior varies by version, and is described
 below.
+
+## Modifiers
+
+Many of the components have optional modifiers to change how it is formatted or parsed.
+
+The `padding` modifier, such as used on the `hour` and `month` components can be padded
+with `space`, `zero` or `none`. In the case of `none` leading zeros are still accepted during
+parsing.
+
+## Traits
+
+A format description is not a single type; it is instead represented by two
+internal traits (one for formatting and one for parsing) that are implemented by a number of types.
+Currently, all types that implement one trait also implement the other, but this is not guaranteed.
+
+The following types currently implement both the `Formattable` and `Parsable` traits:
+
+- `FormatItem<'_>`
+- `[FormatItem<'_>]`
+- `T where <T as Deref>::Target: Formattable` (or `Parsable`)
+- All [well known formats](./well-known-format-descriptions.md)
 
 ## Versioning
 

@@ -6,8 +6,8 @@ In order to know the user age, you would get the today's date and subtract the u
 
 First, let's consider the user input being `"2000-30-10"`. This input need to be parsed to the `Date` type. The parsing feature needs to be explicited stated in your `Cargo.toml` file, otherwise it won`t work. Here is an example:
 
-```rust
-//Cargo.toml file
+```toml
+# Cargo.toml file
 
 [dependencies]
 time = { version = "0.3", features = ["parsing"] }

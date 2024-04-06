@@ -1,106 +1,63 @@
 # Arithmetic
 
-Let's suppose you are creating an finance app for people who are above 18 years old. Normally, instead of asking the age itself, you would ask for the birthdate to track the age evolution, rigth?
+Let's suppose you have an ecommerce and you want to show your users the date of arrival of their purchases.
 
-In order to know the user age, you would get the today's date and subtract the user birthdate. That's sounds possible, but a little verbose for you to write it yourself. Fortunately, the `time` crate has you covered. Let's jump into that!
+In order to know the arrival date, you would get the today's date and add the amount of time that the delivering process takes. That's sounds possible, but a little verbose for you to write it yourself. Fortunately, the `time` crate has you covered. Let's jump into that!
 
-First, let's consider the user input being `"2000-30-10"`. This input need to be parsed to the `Date` type. The parsing feature needs to be explicited stated in your `Cargo.toml` file, otherwise it won`t work. Here is an example:
-
-```rust
-//Cargo.toml file
-
-[dependencies]
-time = { version = "0.3", features = ["parsing"] }
-```
-
-Now we can import the `Date` with the parsing feature. We'll need a parsing type as well and we're going to use `Iso8601` in this one. Do not feel attached to the formatting now, you can change it later and this will be stated later in this book!
-
-And, finally, we will use the OffsetDateTime to get the current date. Here we go then:
+First, we'll need to import the `OffsetDateTime` struct that has a implementation called `now_utc()` that we can use for discover the current date of our user purchase.
 
 ```rust
-use time::{Date, OffsetDateTime};
-use time::format_description::well_known::Iso8601;
+use time::{OffsetDateTime, Date};
 
-fn get_age() {
+fn get_arrival_date() {
 
-    let current_date = OffsetDateTime::now_utc().date();
-    let user_birthdate = Date::parse("2000-10-30", &Iso8601::DATE).unwrap();
+    let current_date: Date = OffsetDateTime::now_utc().date();
 
 }
 ```
 
-Let's recap. In this code we are `OffsetDateTime::now_utc()` to get the current date with the timestamp and using the method `.date()` to select only the date itself in order to get the same format as our user input.
+The `OffsetDateTime::now_utc()` returns a `OffsetDateTime` value like this one: `2024-04-06 13:26:19.8381466 +00:00:00`. As we are more interested in the date itself, we use the `.date()` method to get a `Date` struct that we have to import as well. So now our `current date` variable is like this: `2024-04-06`.
 
-Now we have to take the `user_birthdate` from the `current_date` in order to know the age gap between these two dates. Here is how we are going to do that:
-
-```rust
-let gap_seconds = (current_date - user_birthdate).whole_seconds();
-```
-
-When we do `current_date - user_birthdate` we get an `Duration` type. You can take out the `.whole_seconds` method and see the output in the terminal:
-
-```console
-Finished dev [unoptimized + debuginfo] target(s) in 0.73s
-     Running `target\debug\rust_test.exe`
-
-Duration {
-    seconds: 739411200,
-    nanoseconds: 0,
-}
-```
-
-And then we use the `.whole_seconds` to get the gap between the dates in seconds. Now we just have to convert this in years. That`s the easy part! We just have to calculate how many seconds there are in a year and divide the gap we found by this number of seconds.
+Now let's add our estimated time to deliver to that current date. We'll use a method from the `Date` struct called `.checked_add()`. It receives a value of the `Duration` struct measured in seconds and adds to our current date. Let's calculate our a deliver time using the `Duration` struct from `time` first:
 
 ```rust
 
-const SECONDS_PER_YEAR: i64 = 365*24*60*60;
+use time::Duration;
 
-let years = gap_seconds/SECONDS_PER_YEAR;
-
-```
-
-Knowing how many years our user has, we can use the a simple `if else` clause to tell him if he can open an account in our app:
-
-```rust
-
-if years >= 18{
-        println!("You're {years} years old and able to open an account :)");
-    }
-    else{
-        println!("You're only {years} years old. To open an account, you have to have at least 18 years old");
-    }
+let time_to_deliver: Duration  = 45*(Duration::DAY);
 
 
 ```
 
-Here is the complete code :)
+Considering that we take 45 days to deliver the product(not a very efficient service, I know) we can use the `Duration::DAY` constant that will give the amount of seconds of a day. This helps us to avoid calculting the amount of seconds for ourselves and make our code clear to others as well.
+
+As we take 45 days to deliver, we multiply the amount of seconds returned by 45. Now the `time_to_deliver` variable is a `Duration` that represents our delivering service. Excactly what we need to use the `.checked_add()` method!
 
 ```rust
 
-use time::{Date, OffsetDateTime};
-use time::format_description::well_known::Iso8601;
+let date_of_arrival:Date = current_date.checked_add(time_to_deliver).expect("Something went wrong");
 
-fn get_age() {
-    const SECONDS_PER_YEAR: i64 = 365 * 24 * 60 * 60;
 
-    let user_birthdate = Date::parse("2000-10-30", &Iso8601::DATE).unwrap();
-    let current_date = OffsetDateTime::now_utc().date();
+```
 
-    let gap_seconds = (current_date - user_birthdate).whole_seconds();
+Finally, we use the `.checked_add()` method from our `current_date` variable passing the `time_to_deliver` as a parameter. As this return an `Option<T>` enum, we use `.expect()` to handle when the value returned is `None`. If you are not familiar with the `Option` enum, here is a [link from the Rust Book](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html?highlight=optio#the-option-enum-and-its-advantages-over-null-values) where you can learn more about it!
 
-    let years = gap_seconds / SECONDS_PER_YEAR;
+```rust
 
-    if years >= 18 {
-        println!("You're {} years old and able to open an account :)", years);
-    } else {
-        println!("You're only {} years old. To open an account, you have to be at least 18 years old", years);
-    }
-}
+use time::{Duration, OffsetDateTime, Date};
 
 fn main() {
-    get_age();
+
+    let current_date = OffsetDateTime::now_utc().date();
+
+    let time_to_deliver: Duration  = 48*(Duration::DAY);
+
+    let date_of_arrival:Date = current_date.checked_add(time_to_deliver).expect("Something went wrong");
+
+
+    println!("Your package will arrive in {}!", date_of_arrival);
 }
 
-
-
 ```
+
+And now our user know when the package will arrive :)

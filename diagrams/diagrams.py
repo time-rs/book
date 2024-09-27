@@ -57,7 +57,7 @@ weekday_repr = Sequence('repr:', Choice(
     0, 'long', 'short', 'sunday', 'monday'))
 weekday_one_indexed = Sequence('one_indexed:', Choice(0, 'false', 'true'))
 week_number_repr = Sequence('repr:', Choice(0, 'iso', 'sunday', 'monday'))
-year_repr = Sequence('repr:', Choice(0, 'full', 'last_two'))
+year_repr = Sequence('repr:', Choice(0, 'full', 'four', 'last_two'))
 year_base = Sequence('base:', Choice(0, 'calendar', 'iso_week'))
 ignore_count = Sequence('count:', Comment('number > 0'))
 unix_timestamp_precision = Sequence('precision:',

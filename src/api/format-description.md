@@ -312,10 +312,12 @@ ASCII whitespace characters.
   The padded value has a width of 4. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-  Users can choose between two representations: the full year (the default) and the last two digits
-  of the year. This should be relatively straightforward. Note that when parsing, if only the last
-  two digits of the year are present, the value returned may not be what was expected — if the
-  return is successful at all (it's not guaranteed).
+  Users can choose between three representations: the full year (`full`, the default),
+  the last two digits of the year (`last_two`), and a full year which is forced to be 4
+  digits long (`four`). When the `large-dates` feature is not enabled, `full` and `four` are
+  equivalent. Note that when parsing, if only the last two digits of the year are present,
+  the value returned may not be what was expected — if the return is successful at all (it's not
+  guaranteed).
 
   There are two bases for the year: _calendar_ and _iso\_week_. The former is what you want if using
   the month, day, ordinal, or similar. You likely only want to use `iso_week` if you are using the
@@ -329,5 +331,7 @@ ASCII whitespace characters.
   When the `large-dates` feature is enabled, ambiguities may exist when parsing. For example, if a
   year is immediately followed by the week number, the parser will eagerly consume six digits even
   if the year should only be four and the week number the remaining two.
+  This can be solved by using `repr:four` modifier, which forces the parser to consume four digits
+  when parsing a `[year]`. 
 
   [twitter-bug]: https://www.theguardian.com/technology/2014/dec/29/twitter-2015-date-bug

@@ -301,7 +301,7 @@ ASCII whitespace characters.
   the weekday's full name in English, while the short is the first three letters. There are also
   _sunday_ and _monday_ representations, which are numerical. These formats are either zero to six
   or one to seven (depending on whether `one_indexed` is false or true, respectively), with the
-  named day being at the start of that range.
+  named day being at the start of that range. The default for `one_indexed` is true.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 

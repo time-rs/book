@@ -55,7 +55,7 @@ subsecond_digits = Sequence('digits:', Choice(
     0, '1+', '1', '2', '3', '4', '5', '6', '7', '8', '9'))
 weekday_repr = Sequence('repr:', Choice(
     0, 'long', 'short', 'sunday', 'monday'))
-weekday_one_indexed = Sequence('one_indexed:', Choice(0, 'false', 'true'))
+weekday_one_indexed = Sequence('one_indexed:', Choice(0, 'true', 'false'))
 week_number_repr = Sequence('repr:', Choice(0, 'iso', 'sunday', 'monday'))
 year_repr = Sequence('repr:', Choice(0, 'full', 'last_two'))
 year_base = Sequence('base:', Choice(0, 'calendar', 'iso_week'))

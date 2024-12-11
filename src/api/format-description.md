@@ -317,6 +317,11 @@ ASCII whitespace characters.
   two digits of the year are present, the value returned may not be what was expected — if the
   return is successful at all (it's not guaranteed).
 
+  There are two ranges: _extended_ (the default) and _standard_. When the `large-dates` feature flag
+  is _not_ enabled, the two behave identically. When enabled, using _standard_ allows for
+  selectively opting out of the extended range, both for parsing and formatting. This avoids
+  ambiguities when parsing, namely when a year is immediately followed by another numeric value.
+
   There are two bases for the year: _calendar_ and _iso\_week_. The former is what you want if using
   the month, day, ordinal, or similar. You likely only want to use `iso_week` if you are using the
   week number with `repr:iso`. [Don't be like Twitter][twitter-bug]; know which should be used when.

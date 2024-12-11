@@ -58,6 +58,7 @@ weekday_repr = Sequence('repr:', Choice(
 weekday_one_indexed = Sequence('one_indexed:', Choice(0, 'true', 'false'))
 week_number_repr = Sequence('repr:', Choice(0, 'iso', 'sunday', 'monday'))
 year_repr = Sequence('repr:', Choice(0, 'full', 'last_two'))
+year_range = Sequence('range:', Choice(0, 'extended', 'standard'))
 year_base = Sequence('base:', Choice(0, 'calendar', 'iso_week'))
 ignore_count = Sequence('count:', Comment('number > 0'))
 unix_timestamp_precision = Sequence('precision:',
@@ -131,7 +132,7 @@ weekday = generate_diagram('weekday', copy(
 week_number = generate_diagram(
     'week_number', copy(padding), copy(week_number_repr))
 year = generate_diagram('year', copy(padding), copy(
-    year_repr), copy(year_base), copy(sign))
+    year_repr), copy(year_range), copy(year_base), copy(sign))
 hour = generate_diagram('hour', copy(padding), copy(hour_repr))
 minute = generate_diagram('minute', copy(padding))
 period = generate_diagram('period', copy(period_case), copy(case_sensitive))

@@ -312,10 +312,10 @@ ASCII whitespace characters.
   The padded value has a width of 4. You can choose between padding with zeroes, spaces, or having
   no padding at all. The default is to pad the value with zeroes.
 
-  Users can choose between two representations: the full year (the default) and the last two digits
-  of the year. This should be relatively straightforward. Note that when parsing, if only the last
-  two digits of the year are present, the value returned may not be what was expected — if the
-  return is successful at all (it's not guaranteed).
+  Users can choose between three representations: the full year (the default), the century and the
+  last two digits of the year. This should be relatively straightforward. Note that when parsing, if
+  only the century or last two digits of the year are present, the value returned may not be what
+  was expected — if the return is successful at all (it's not guaranteed).
 
   There are two ranges: _extended_ (the default) and _standard_. When the `large-dates` feature flag
   is _not_ enabled, the two behave identically. When enabled, using _standard_ allows for

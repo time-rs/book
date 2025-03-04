@@ -333,6 +333,7 @@ ASCII whitespace characters.
 
   When the `large-dates` feature is enabled, ambiguities may exist when parsing. For example, if a
   year is immediately followed by the week number, the parser will eagerly consume six digits even
-  if the year should only be four and the week number the remaining two.
+  if the year should only be four and the week number the remaining two. This can be avoided by
+  using the `range:standard` modifier.
 
   [twitter-bug]: https://www.theguardian.com/technology/2014/dec/29/twitter-2015-date-bug

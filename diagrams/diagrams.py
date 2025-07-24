@@ -59,7 +59,7 @@ padding = Sequence("padding:", Choice(0, "zero", "space", "none"))
 case_sensitive = Sequence("case_sensitive:", Choice(0, "true", "false"))
 hour_repr = Sequence("repr:", Choice(0, "24", "12"))
 month_repr = Sequence("repr:", Choice(0, "numerical", "long", "short"))
-period_case = Sequence("case:", Choice(0, "lower", "upper"))
+period_case = Sequence("case:", Choice(0, "upper", "lower"))
 sign = Sequence("sign:", Choice(0, "automatic", "mandatory"))
 subsecond_digits = Sequence(
     "digits:", Choice(0, "1+", "1", "2", "3", "4", "5", "6", "7", "8", "9")

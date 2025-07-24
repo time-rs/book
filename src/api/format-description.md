@@ -250,8 +250,8 @@ ASCII whitespace characters.
 
   ![syntax for period component](../diagrams/period.svg#rr)
 
-  Users have the option to choose whether the value is uppercase or lowercase. This component is
-  typically used in conjunction with the hour of the day with `repr:12`.
+  Users have the option to choose whether the value is uppercase (the default) or lowercase. This
+  component is typically used in conjunction with the hour of the day with `repr:12`.
 
   When parsing, there is the option to consume text-based formats case-insensitively.
 

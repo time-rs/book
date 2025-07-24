@@ -1,6 +1,6 @@
 <style>
 @media not print {
-  .ayu img[src$='#rr'], .navy img[src$='#rr'], .coal img[src$='#rr'] {
+  :is(.ayu, .navy, .coal) img[src$='#rr'] {
     filter: invert(0.8) hue-rotate(180deg);
   }
 }

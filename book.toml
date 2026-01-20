@@ -2,12 +2,10 @@
 title = "Time"
 authors = ["Jacob Pratt"]
 language = "en"
-multilingual = false
 src = "src"
-create-missing = false
 
 [rust]
-edition = "2021"
+edition = "2024"
 
 [output.html]
 no-section-label = true

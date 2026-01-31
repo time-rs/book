@@ -54,8 +54,10 @@ Currently, all types that implement one trait also implement the other, but this
 
 The following types currently implement both the `Formattable` and `Parsable` traits:
 
-- `FormatItem<'_>`
-- `[FormatItem<'_>]`
+- `BorrowedFormatItem<'_>`
+- `[BorrowedFormatItem<'_>]`
+- `OwnedFormatItem`
+- `[OwnedFormatItem]`
 - `T where <T as Deref>::Target: Formattable` (or `Parsable`)
 - All [well known formats](./well-known-format-descriptions.md)
 
@@ -146,8 +148,8 @@ ASCII whitespace characters.
 
   ![syntax for first component](../diagrams/first.svg#rr)
 
-  A series of `FormatItem`s (or `OwnedFormatItem`s) where, when parsing, the first successful parse
-  is used. When formatting, the first item is used.
+  A series of `BorrowedFormatItem`s (or `OwnedFormatItem`s) where, when parsing, the first
+  successful parse is used. When formatting, the first item is used.
 
   `format_description` refers to a complete format description that is nested; whitespace (including
   leading and trailing) is significant.

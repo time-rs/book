@@ -64,6 +64,7 @@ sign = Sequence("sign:", Choice(0, "automatic", "mandatory"))
 subsecond_digits = Sequence(
     "digits:", Choice(0, "1+", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 )
+trailing_input = Sequence("trailing_input:", Choice(0, "prohibit", "discard"))
 weekday_repr = Sequence("repr:", Choice(0, "long", "short", "sunday", "monday"))
 weekday_one_indexed = Sequence("one_indexed:", Choice(0, "true", "false"))
 week_number_repr = Sequence("repr:", Choice(0, "iso", "sunday", "monday"))
@@ -188,7 +189,7 @@ ignore = NamedDiagram(
 unix_timestamp = generate_diagram(
     "unix_timestamp", copy(unix_timestamp_precision), copy(sign)
 )
-end = generate_diagram("end")
+end = generate_diagram("end", copy(trailing_input))
 
 format_description = Comment("format_description")
 

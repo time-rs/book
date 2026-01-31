@@ -156,10 +156,14 @@ ASCII whitespace characters.
 
   ![syntax for end component](../diagrams/end.svg#rr)
 
-  This component indicates the end of the input. When formatting, it is a no-op. When parsing, it
-  will only succeed if there is no further input. It does not consume any input.
+  This component indicates the end of the input. When formatting, it is a no-op. When parsing, the
+  behavior depends on the `trailing_input` modifier.
 
-  There is no customization available for this component.
+  By default and with `trailing_input:prohibit`, any remaining input will cause an error. With
+  `trailing_input:discard`, any remaining input will be actively discarded. Note that this does
+  **not** stop parsing early; if there are additional components after `[end]`, they will attempt to
+  be parsed (and presumably fail). As such, you should ensure that `[end]` is the last component in
+  every path to it.
 
 - **Clock hour**: `[hour]`
 

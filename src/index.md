@@ -100,7 +100,7 @@ Around 2019, the time crate, which was unmaintained since August 2016, was picke
 again. `time` has since been rewritten as of time 0.2, and is incompatible with the 0.1 version.
 
 Today:
-- `time` has been rewritten from 0.1,and is actively developed.
+- `time` has been rewritten from 0.1, and is actively developed.
 - `chrono` depends on time 0.1, an old version unrelated with current `time`, and is actively
 developed as well.
 

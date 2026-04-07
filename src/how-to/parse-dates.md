@@ -41,7 +41,7 @@ let time = Time::parse("h=11,m=12,s=13", &my_format).unwrap();
 
 For convenience, you can use Serde with `time`.
 
-1. Enable [feature `serde-well-known`][serde-well-known].
+1. Enable [feature `serde-well-known`][feature-serde-well-known].
 
 2. Create a struct and parse from a format, eg. JSON using [`serde-json`][serde-json]:
 

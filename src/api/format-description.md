@@ -17,16 +17,17 @@
 A format description is the manner in which the time crate knows how a value should be formatted and
 parsed.
 
-While it is possible to construct a format description manually, this is generally not recommended,
-as it is more tedious and less readable than the alternative. Unless you are doing this, you will
-likely never need to know anything about `FormatItem` other than that it is produced by the
-`format_description!` macro or any of the various parsing methods.
+While it is possible to construct a v1 or v2 format description manually, this is generally not
+recommended, as it is more tedious and less readable than the alternative. v3 format descriptions
+cannot be constructed manually. Unless you are doing this, you will likely never need to know
+anything about format item types other than that they are produced by the `format_description!`
+macro or any of the various parsing methods.
 
 If the format description is statically known, you should use the `format_description!` macro. This
-is identical to the `format_description::parse` method, but runs at compile-time, throwing an error
-if the format description is invalid. If you do not know the desired format statically (such as if
-you are using one provided by the user), you should use the `format_description::parse_owned` method
-(or similar method in the `format_description` module), which is fallible.
+is identical to the `format_description::parse_owned` method, but runs at compile-time, throwing an
+error if the format description is invalid. If you do not know the desired format statically (such
+as if you are using one provided by the user), you should use the `format_description::parse_owned`
+method (or similar method in the `format_description` module), which is fallible.
 
 Format descriptions have **components** and **literals**. Literals are formatted and parsed as-is.
 Components are the mechanism by which values (such as a `Time` or `Date`) are dynamically formatted
@@ -54,6 +55,7 @@ Currently, all types that implement one trait also implement the other, but this
 
 The following types currently implement both the `Formattable` and `Parsable` traits:
 
+- `FormatDescriptionV3`
 - `BorrowedFormatItem<'_>`
 - `[BorrowedFormatItem<'_>]`
 - `OwnedFormatItem`
@@ -70,19 +72,28 @@ newer versions for technical reasons.
 In most cases, you do not need to worry about the version of the format description. However,
 there are some differences.
 
-### Differences
+### Difference: escaped characters
 
-| Literal | Version 1 | Version 2 |
-| ------- | --------- | --------- |
-| `[`     | `[[`      | `\[`      |
-| `]`     | `]`       | `\]`      |
-| `\`     | `\`       | `\\`      |
+| Literal | Version 1 | Versions 2 & 3 |
+| ------- | --------- | -------------- |
+| `[`     | `[[`      | `\[`           |
+| `]`     | `]`       | `\]`           |
+| `\`     | `\`       | `\\`           |
 
-`[first]` and `[optional]` are supported in both version 1 and version 2, but individual methods may
-prevent their use. This is because some methods return a format description that is entirely
-borrowed. However, when parsing `[first]` and `[optional]`, the generated sequence is necessarily
-owned. For this reason, you will need to use the `format_description::parse_owned` method or the
-`format_description!` macro to use these components.
+`[first]` and `[optional]` are supported all versions, but individual methods may prevent their use.
+This is because some methods return a format description that is entirely borrowed. However, when
+parsing `[first]` and `[optional]`, the generated sequence is necessarily owned. For this reason,
+you will need to use the `format_description::parse_owned` method or the `format_description!` macro
+to use these components.
+
+### Difference: semantic validation
+
+In v3 format descriptions, semantic validation is performed to ensure that combinations of modifiers
+make sense together. For example, `[month repr:long padding:space]` is rejected because textual representations of months do not have padding.
+
+### Difference: case sensitivity
+
+v1 and v2 format descriptions are case-insensitive when parsing components. v3 format descriptions require the component name and all modifiers be lowercase.
 
 ### Version used
 
@@ -100,14 +111,16 @@ to use a different version.
 #### Configuring [`format_description!`]
 
 For backwards-compatibility reasons, the `format_description!` macro defaults to version 1. If you
-want to use a different version, you can do so by setting the `version` parameter to `2`. Note that
-this is only necessary if you are relying on a difference in behavior between the versions.
+want to use a different version, you can do so by setting the `version` parameter appropriately.
+Note that this is only _necessary_ if you are relying on a difference in behavior between the
+versions, but it is strongly recommended to use the latest version.
 
 ```rust,no_run
 use time::macros::format_description;
 let _ = format_description!("[hour]:[minute]:[second]"); // Version 1 is implied.
 let _ = format_description!(version = 1, "[hour]:[minute]:[second]");
 let _ = format_description!(version = 2, "[hour]:[minute]:[second]");
+let _ = format_description!(version = 3, "[hour]:[minute]:[second]"); // preferred
 ```
 
 Attempting to provide an invalid version will result in a compile-time error.
@@ -124,9 +137,9 @@ let _ = format_description!(version = 0, "[hour]:[minute]:[second]");
 
 `[[` produces a literal `[`. No other character must be escaped.
 
-### Version 2
+### Versions 2 & 3
 
-![version 2 top-level syntax](../diagrams/abbreviated-v2.svg#rr)
+![versions 2 & 3 top-level syntax](../diagrams/abbreviated-v2.svg#rr)
 
 `\` is used to begin an escape sequence. Currently, the only valid escape sequences are `\[`, `\]`,
 and `\\`. Any other character following `\` is invalid.
@@ -323,10 +336,11 @@ ASCII whitespace characters.
   only the century or last two digits of the year are present, the value returned may not be what
   was expected — if the return is successful at all (it's not guaranteed).
 
-  There are two ranges: _extended_ (the default) and _standard_. When the `large-dates` feature flag
-  is _not_ enabled, the two behave identically. When enabled, using _standard_ allows for
-  selectively opting out of the extended range, both for parsing and formatting. This avoids
-  ambiguities when parsing, namely when a year is immediately followed by another numeric value.
+  There are two ranges: _extended_ and _standard_. In v1 and v2 format descriptions, _extended_ is
+  the default; in v3 the default is _standard_. When the `large-dates` feature flag is _not_
+  enabled, the two behave identically. When enabled, using _standard_ allows for selectively opting
+  out of the extended range, both for parsing and formatting. This avoids ambiguities when parsing,
+  namely when a year is immediately followed by another numeric value.
 
   There are two bases for the year: _calendar_ and _iso\_week_. The former is what you want if using
   the month, day, ordinal, or similar. You likely only want to use `iso_week` if you are using the
